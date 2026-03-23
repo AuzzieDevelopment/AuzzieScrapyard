@@ -84,7 +84,6 @@ CreateThread(function()
                         clip = 'base'
                     }
                 })
-
                 if success then
                     -- Start cooldown FOR THIS PLAYER ONLY
                     cooldowns[key] = now + Config.CoolDownOnCar
@@ -94,7 +93,6 @@ CreateThread(function()
                         NetworkGetNetworkIdFromEntity(entity)
                     )
                 end
-
                 busy = false
                 if torch then
                     DeleteObject(torch)

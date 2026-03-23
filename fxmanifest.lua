@@ -28,3 +28,9 @@ server_scripts {
 dependencies {
 	'ox_target',
 }
+
+escrow_ignore {
+	'config.lua',
+	'client.lua',
+	'server.lua',
+}
