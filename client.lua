@@ -12,6 +12,26 @@ local function getEntityKey(entity)
     )
 end
 
+local function createParticle(particleName, entity)
+    UseParticleFxAssetNextCall('core')
+    local particle = StartParticleFxLoopedOnEntity(
+        particleName,
+        entity,
+        -0.16,
+        0.14,
+        0.0,
+        20.0,
+        0.0,
+        0.0,
+        2.0,
+        true,
+        false,
+        false
+    )
+    return particle
+end
+
+
 local function spawnPropInHand(playerPed, propModel)
     local boneIndex = GetPedBoneIndex(playerPed, 57005) -- Right hand
     local coords = GetWorldPositionOfEntityBone(playerPed, boneIndex)
@@ -70,6 +90,7 @@ CreateThread(function()
 
                 busy = true
                 local torch = spawnPropInHand(PlayerPedId(), torchModel)
+                local particle = createParticle('ent_anim_welder', torch)
                 local success = lib.progressBar({
                     duration = Config.ScrapTime * 1000,
                     label = 'Scrapping vehicle...',
@@ -96,6 +117,7 @@ CreateThread(function()
                 busy = false
                 if torch then
                     DeleteObject(torch)
+                    RemoveParticleFx(particle, true)
                 end
             end
         }
