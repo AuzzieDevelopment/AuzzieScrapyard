@@ -1,5 +1,6 @@
 local busy = false
 local cooldowns = {} -- [carKey] = expireTime
+local torchModel = GetHashKey('prop_weld_torch')
 
 local function getEntityKey(entity)
     local coords = GetEntityCoords(entity)
@@ -9,6 +10,38 @@ local function getEntityKey(entity)
         coords.y,
         coords.z
     )
+end
+
+local function spawnPropInHand(playerPed, propModel)
+    local boneIndex = GetPedBoneIndex(playerPed, 57005) -- Right hand
+    local coords = GetWorldPositionOfEntityBone(playerPed, boneIndex)
+    local prop = CreateObject(
+        propModel,
+        coords.x,
+        coords.y,
+        coords.z,
+        true,
+        true,
+        false
+    )
+    AttachEntityToEntity(
+        prop,
+        playerPed,
+        boneIndex,
+        0.15,
+        0.05,
+        0.0,
+        20.0,
+        180.0,
+        -15.0,
+        false,
+        false,
+        false,
+        false,
+        2,
+        true
+    )
+    return prop
 end
 
 CreateThread(function()
@@ -36,7 +69,7 @@ CreateThread(function()
                 end
 
                 busy = true
-
+                local torch = spawnPropInHand(PlayerPedId(), torchModel)
                 local success = lib.progressBar({
                     duration = Config.ScrapTime * 1000,
                     label = 'Scrapping vehicle...',
@@ -63,6 +96,9 @@ CreateThread(function()
                 end
 
                 busy = false
+                if torch then
+                    DeleteObject(torch)
+                end
             end
         }
     })
